@@ -132,11 +132,11 @@
     import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
     import { VirtualTourPlugin } from '@photo-sphere-viewer/virtual-tour-plugin';
 
-    const baseUrl = '';
+    const baseUrl = './';
     const nodes = [
       {
         id: 'env1-2021',
-        panorama: baseUrl + 'https://arlonem.github.io/NobleCanyonViewer/Panoramas/2021P70.jpg',
+        panorama: baseUrl + 'Panoramas/2021P70.jpg',
         caption: '2021 P70',
         markers: [
           {
@@ -153,7 +153,7 @@
       },
       {
         id: 'env1-2022',
-        panorama: baseUrl + 'https://arlonem.github.io/NobleCanyonViewer/Panoramas/2022P01.jpg',
+        panorama: baseUrl + 'Panoramas/2022P01.jpg',
         caption: '2022 P01',
         markers: [
           {
@@ -172,7 +172,7 @@
             size: { width: 55, height: 55 },
             anchor: 'bottom center',
             tooltip: 'View field photo',
-            data: { photoUrl: baseUrl + 'Panoramas/DSC_P01.jpg' }
+            data: { photoUrl: baseUrl + 'https://arlonem.github.io/NobleCanyonViewer/Panoramas/DSC_P01.JPG' }
           }
         ],
         links: [{ nodeId: 'env2-2022', position: { yaw: 1.0, pitch: 0.0 } }]
@@ -195,7 +195,7 @@
             size: { width: 55, height: 55 },
             anchor: 'bottom center',
             tooltip: 'View mountain photo',
-            data: { photoUrl: baseUrl + 'Panoramas/DSC_P05.jpg' }
+            data: { photoUrl: baseUrl + 'https://arlonem.github.io/NobleCanyonViewer/Panoramas/DSC_P05.JPG' }
           }
         ],
         links: [{ nodeId: 'env1-2022', position: { yaw: -1.0, pitch: 0.0 } }]

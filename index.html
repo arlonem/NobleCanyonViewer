@@ -66,31 +66,31 @@
 
     /* photo lightbox modal */
     #photoModal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: none;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    z-index: 2000;
-  }
-  #photoModal img {
-    display: block;
-    max-width: 75vw;
-    max-height: 75vh;
-    border: 12px solid white;
-    border-radius: 4px;
-    object-fit: contain;
-  }
-  #photoModal button {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-  }
-</style>
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: none;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      z-index: 2000;
+    }
+    #photoModal img {
+      display: block;
+      max-width: 75vw;
+      max-height: 75vh;
+      border: 12px solid white;
+      border-radius: 4px;
+      object-fit: contain;
+    }
+    #photoModal button {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+    }
+  </style>
 </head>
 <body>
   <div id="viewer" style="width:100vw; height:100vh; position:relative;">
@@ -132,7 +132,9 @@
     import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
     import { VirtualTourPlugin } from '@photo-sphere-viewer/virtual-tour-plugin';
 
-    const baseUrl = './';
+    // point this at your GitHub Pages root
+    const baseUrl = '/NobleCanyonViewer/';
+
     const nodes = [
       {
         id: 'env1-2021',
@@ -172,7 +174,7 @@
             size: { width: 55, height: 55 },
             anchor: 'bottom center',
             tooltip: 'View field photo',
-            data: { photoUrl: 'https://arlonem.github.io/NobleCanyonViewer/Panoramas/DSC_P01.JPG' }
+            data: { photoUrl: baseUrl + 'Panoramas/DSC_P01.JPG' }
           }
         ],
         links: [{ nodeId: 'env2-2022', position: { yaw: 1.0, pitch: 0.0 } }]
@@ -195,7 +197,7 @@
             size: { width: 55, height: 55 },
             anchor: 'bottom center',
             tooltip: 'View mountain photo',
-            data: { photoUrl: 'https://arlonem.github.io/NobleCanyonViewer/Panoramas/DSC_P05.JPG' }
+            data: { photoUrl: baseUrl + 'Panoramas/DSC_P05.JPG' }
           }
         ],
         links: [{ nodeId: 'env1-2022', position: { yaw: -1.0, pitch: 0.0 } }]
@@ -215,7 +217,6 @@
 
     const vt = viewer.getPlugin(VirtualTourPlugin);
     const mp = viewer.getPlugin(MarkersPlugin);
-
     let currentEnv = 'env1';
     vt.addEventListener('node-changed', ({ node }) => {
       currentEnv = node.id.split('-')[0];
@@ -228,9 +229,8 @@
         document.getElementById('pointCloudFrame').src = marker.data.pointCloudUrl;
         document.getElementById('pointCloudModal').style.display = 'block';
       } else if (marker.data.photoUrl) {
-        const photoModal = document.getElementById('photoModal');
         document.getElementById('photoImg').src = marker.data.photoUrl;
-        photoModal.style.display = 'block';
+        document.getElementById('photoModal').style.display = 'block';
       }
     });
 

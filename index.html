@@ -16,7 +16,6 @@
     href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/virtual-tour-plugin/index.css"
   />
   <title>Photo Sphere Viewer</title>
-
   <style>
     /* year-switcher styling */
     #yearSwitcher {
@@ -132,7 +131,6 @@
     import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
     import { VirtualTourPlugin } from '@photo-sphere-viewer/virtual-tour-plugin';
 
-    // point this at your GitHub Pages root
     const baseUrl = '/NobleCanyonViewer/';
 
     const nodes = [
@@ -211,7 +209,12 @@
       defaultYaw: 0.5,
       defaultPitch: 0,
       plugins: [
-        [ VirtualTourPlugin, { nodes, startNodeId: 'env1-2021', transition: { duration: 800 } } ],
+        [ VirtualTourPlugin, {
+            nodes,
+            startNodeId: 'env1-2021',
+            transition: { duration: 800 }
+          }
+        ],
         [ MarkersPlugin, {} ]
       ]
     });
@@ -244,13 +247,17 @@
     document.getElementById('closePhoto').onclick = () =>
       document.getElementById('photoModal').style.display = 'none';
 
-    // year-switcher: preserve yaw/pitch
+    // year-switcher: preserve yaw/pitch/zoom
     document.querySelectorAll('#yearSwitcher button').forEach(btn => {
       btn.addEventListener('click', () => {
-        const year = btn.dataset.year;
+        const year   = btn.dataset.year;
         const nodeId = `${currentEnv}-${year}`;
         const { yaw, pitch } = viewer.getPosition();
-        vt.setCurrentNode(nodeId, { rotate: { yaw, pitch } });
+        const zoom          = viewer.getZoom();
+        vt.setCurrentNode(nodeId, {
+          rotateTo: { yaw, pitch },   // keep the same direction
+          zoomTo:   zoom              // keep the same zoom level
+        });
       });
     });
   </script>

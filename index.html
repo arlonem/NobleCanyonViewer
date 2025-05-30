@@ -16,7 +16,6 @@
     href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/virtual-tour-plugin/index.css"
   />
   <title>Photo Sphere Viewer</title>
-
   <style>
     /* year-switcher styling */
     #yearSwitcher {
@@ -173,9 +172,7 @@
             size: { width: 55, height: 55 },
             anchor: 'bottom center',
             tooltip: 'View field photo',
-            data: {
-              photoUrl: baseUrl + 'Panoramas/DSC_P01.JPG'
-            }
+            data: { photoUrl: baseUrl + 'Panoramas/DSC_P01.JPG' }
           }
         ],
         links: [{ nodeId: 'env2-2022', position: { yaw: 1.0, pitch: 0.0 } }]
@@ -198,22 +195,26 @@
             size: { width: 55, height: 55 },
             anchor: 'bottom center',
             tooltip: 'View mountain photo',
-            data: {
-              photoUrl: baseUrl + 'Panoramas/DSC_P05.JPG'
-            }
+            data: { photoUrl: baseUrl + 'Panoramas/DSC_P05.JPG' }
           }
         ],
         links: [{ nodeId: 'env1-2022', position: { yaw: -1.0, pitch: 0.0 } }]
       }
     ];
 
+    // initialize PSV
     const viewer = new Viewer({
       container: 'viewer',
-      navbar: ['zoom', 'move', 'caption', 'fullscreen'],
+      navbar: ['zoom','move','caption','fullscreen'],
       defaultYaw: 0.5,
       defaultPitch: 0,
       plugins: [
-        [ VirtualTourPlugin, { nodes, startNodeId: 'env1-2021', transition: { duration: 1000 } } ],
+        [ VirtualTourPlugin, {
+            nodes,
+            startNodeId: 'env1-2021',
+            transition: { duration: 800 }
+          }
+        ],
         [ MarkersPlugin, {} ]
       ]
     });
@@ -221,12 +222,15 @@
     const vt = viewer.getPlugin(VirtualTourPlugin);
     const mp = viewer.getPlugin(MarkersPlugin);
     let currentEnv = 'env1';
+
+    // refresh markers on node change
     vt.addEventListener('node-changed', ({ node }) => {
       currentEnv = node.id.split('-')[0];
       mp.clearMarkers();
       node.markers?.forEach(m => mp.addMarker(m));
     });
 
+    // marker clicks
     mp.addEventListener('select-marker', ({ marker }) => {
       if (marker.data.pointCloudUrl) {
         document.getElementById('pointCloudFrame').src = marker.data.pointCloudUrl;
@@ -237,16 +241,23 @@
       }
     });
 
-    document.getElementById('closeModal').onclick = () => {
+    // close modals
+    document.getElementById('closeModal').onclick = () =>
       document.getElementById('pointCloudModal').style.display = 'none';
-    };
-    document.getElementById('closePhoto').onclick = () => {
+    document.getElementById('closePhoto').onclick = () =>
       document.getElementById('photoModal').style.display = 'none';
-    };
 
+    // year-switcher: preserve yaw/pitch/zoom
     document.querySelectorAll('#yearSwitcher button').forEach(btn => {
       btn.addEventListener('click', () => {
-        vt.setCurrentNode(`${currentEnv}-${btn.dataset.year}`);
+        const year   = btn.dataset.year;
+        const nodeId = `${currentEnv}-${year}`;
+        const { yaw, pitch } = viewer.getPosition();
+        const zoom          = viewer.getZoom();
+        vt.setCurrentNode(nodeId, {
+          rotateTo: { yaw, pitch },   // keep the same direction
+          zoomTo:   zoom              // keep the same zoom level
+        });
       });
     });
   </script>

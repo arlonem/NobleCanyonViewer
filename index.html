@@ -132,7 +132,7 @@
     import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
     import { VirtualTourPlugin } from '@photo-sphere-viewer/virtual-tour-plugin';
 
-    // your GH-Pages root
+    // point this at your GitHub Pages root
     const baseUrl = '/NobleCanyonViewer/';
 
     const nodes = [
@@ -211,32 +211,16 @@
       defaultYaw: 0.5,
       defaultPitch: 0,
       plugins: [
-        [ VirtualTourPlugin, {
-            nodes,
-            startNodeId: 'env1-2021',
-            transitionOptions: { fadeIn: true, rotation: true } 
-          }
-        ],
+        [ VirtualTourPlugin, { nodes, startNodeId: 'env1-2021', transition: { duration: 800 } } ],
         [ MarkersPlugin, {} ]
       ]
     });
 
-    // get plugins
     const vt = viewer.getPlugin(VirtualTourPlugin);
     const mp = viewer.getPlugin(MarkersPlugin);
-
-    // ─── PATCH setCurrentNode to carry over yaw/pitch ─────────────────────
-    const originalSetCurrentNode = vt.setCurrentNode.bind(vt);
-    vt.setCurrentNode = (nodeId, options = {}) => {
-      // capture current view
-      const { yaw, pitch } = viewer.getPosition();
-      // pass it into rotateTo
-      return originalSetCurrentNode(nodeId, { ...options, rotateTo: { yaw, pitch } });
-    };
-    // ─────────────────────────────────────────────────────────────────────
+    let currentEnv = 'env1';
 
     // refresh markers on node change
-    let currentEnv = 'env1';
     vt.addEventListener('node-changed', ({ node }) => {
       currentEnv = node.id.split('-')[0];
       mp.clearMarkers();
@@ -255,17 +239,18 @@
     });
 
     // close modals
-    document.getElementById('closeModal').onclick = () => {
+    document.getElementById('closeModal').onclick = () =>
       document.getElementById('pointCloudModal').style.display = 'none';
-    };
-    document.getElementById('closePhoto').onclick = () => {
+    document.getElementById('closePhoto').onclick = () =>
       document.getElementById('photoModal').style.display = 'none';
-    };
 
-    // year-switcher
+    // year-switcher: preserve yaw/pitch
     document.querySelectorAll('#yearSwitcher button').forEach(btn => {
       btn.addEventListener('click', () => {
-        vt.setCurrentNode(`${currentEnv}-${btn.dataset.year}`);
+        const year = btn.dataset.year;
+        const nodeId = `${currentEnv}-${year}`;
+        const { yaw, pitch } = viewer.getPosition();
+        vt.setCurrentNode(nodeId, { rotate: { yaw, pitch } });
       });
     });
   </script>
